@@ -1,0 +1,76 @@
+#################################################
+###             Default Settings              ###
+#################################################
+
+# Application and Active Profile
+spring:
+  application:
+    name: stock-price-service
+  profiles:
+    active: dev
+
+#################################################
+###             Profile Settings              ###
+#################################################
+
+---
+server:
+  port: 8006
+
+# jpa config
+spring:
+  profiles: dev
+  jpa:
+    generate-ddl: true
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        # dialect: org.hibernate.dialect.MySQL8Dialect
+        enable_lazy_load_no_trans: true
+
+  #开启h2控制台功能和访问地址
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # data source
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:db_stock-price;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    schema: classpath:db/schema.sql
+    data: classpath:db/data.sql
+
+  # static resource
+  resources:
+    static-locations: classpath:static/,file:static/
+
+  # jason format
+  jackson:
+    date-format: dd-MM-yyyy HH:mm:ss
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: false
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+
+# Service Register and Discovery
+eureka:
+  client:
+    service-url:
+      defaultZone: http://admin:123456@localhost:7000/eureka/
+
+# Logging
+logging:
+  level:
+    ROOT: INFO
+    com.ibm.fsd.smc.ms.sp: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file: /logs/stock-price-service-dev.log
